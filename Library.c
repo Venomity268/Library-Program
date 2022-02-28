@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int main()
 {
@@ -13,6 +14,7 @@ int main()
     scanf("%d", &task);
     printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
     
+    //setting default passcode 1234
     sys = fopen ("System-Passcode.bin", "rb");
     if(sys==NULL){
     sys = fopen ("System-Passcode.bin", "ab");
@@ -21,7 +23,7 @@ int main()
     fscanf(sys, "%d", &systempasscode);
     fclose(sys);
     
-    
+    //setting default backup interval
     sys1 = fopen ("System-Backup.bin", "rb");
     if(sys1==NULL){
     sys1 = fopen ("System-Backup.bin", "ab");
@@ -34,7 +36,7 @@ int main()
     fscanf(sys1, "%d %d", &systembackup, &count);
     fclose(sys1);}
         
-        
+        //task 1 where listing of books occurs
         if(task==1){
         printf("\nWhat Books are you looking for? Fiction or Non-Fiction (type exactly as shown). - ");
         scanf("%s", &type[w]);
@@ -44,7 +46,8 @@ int main()
             
         fp = fopen ("Fiction.txt", "r");
         if(fp==NULL){
-        printf("\nSorry for the inconvenience but the Fiction book list is not available for searching at the moment!");}
+        printf("\nSorry for the inconvenience but the Fiction book list is not available for searching at the moment!");
+        fclose(fp);}
             
         else{
             
@@ -61,7 +64,8 @@ int main()
                
         fp = fopen ("Non-Fiction.txt", "r");
         if(fp==NULL){
-        printf("\nSorry for the inconvenience but the Non-Fiction book list is not available for searching at the moment!");}
+        printf("\nSorry for the inconvenience but the Non-Fiction book list is not available for searching at the moment!");
+        fclose(fp);}
             
         else{
           
@@ -74,6 +78,7 @@ int main()
         ++line_number;}}
         fclose(fp);}}}
             
+            //task 2 where you can add a book to the management system
             else if (task==2){
             printf("\nEnter passcode ");
             scanf("%d", &passcode);
@@ -82,7 +87,8 @@ int main()
             scanf("%s", &type[w]);
             
             if(type[w]=='F' || type[w]=='f'){
-                
+
+            //Fiction Books addition  
             printf("How much Fiction book(s) do you want to add? ");
             scanf("%d", &addcount);
 
@@ -105,7 +111,8 @@ int main()
             fclose(fp);}}   
                 
             else{
-                
+
+            //Non-Fiction Books addition   
             printf("How much Non-Fiction book(s) do you want to add? ");
             scanf("%d", &addcount);
 
@@ -131,7 +138,7 @@ int main()
                 
             printf("Access has been denied.");}
             }
-                
+                //task 3 where you can remove a book from the management system
                 else if (task==3){
                 printf("\nEnter passcode ");
                 scanf("%d", &passcode);
@@ -142,6 +149,7 @@ int main()
                 
                 if(type[w]=='F' || type[w]=='f'){
                 
+                //Fiction Books removal
                 fp = fopen ("Fiction.txt", "r");
                 fclose(fp);
                 if(fp==NULL){
@@ -169,6 +177,7 @@ int main()
                 
                 else{
                 
+                //Non-Fiction Books removal
                 fp = fopen ("Non-Fiction.txt", "r"); 
                 fclose(fp);
                 if(fp==NULL){
@@ -196,7 +205,8 @@ int main()
                 else{
                     
                 printf("Access has been denied.");}}
-                 
+            
+                    //task 4 where books lists can be opened in your on desktop editor for manual editing/viewing
                     else if (task==4){
                     printf("\nEnter passcode ");
                     scanf("%d", &passcode);
@@ -206,6 +216,7 @@ int main()
                         
                     if(type[w]=='F' || type[w]=='f'){
 
+                    //Fiction Books manual editing/viewing
                     printf("The Fiction Book list has been opened for manual editing.");   
                     fp = fopen("Fiction.txt", "a");  
                     fclose(fp); 
@@ -214,6 +225,7 @@ int main()
                         
                     else{
 
+                    //Non-Fiction Books manual editing/viewing
                     printf("The Non-Fiction Book list has been opened for manual editing.");
                     fp = fopen("Non-Fiction.txt", "a");  
                     fclose(fp);
@@ -224,7 +236,9 @@ int main()
                         
                     printf("Access has been denied.");}}
                         
+                        //task 5 where the changing of passcodes, backup intervals and Restoration of book lists occurs
                         else if (task==5){
+                        //changing of passcode
                         printf("\nEnter passcode ");
                         scanf("%d", &passcode);
                         if(passcode==systempasscode){
@@ -237,7 +251,8 @@ int main()
                         sys = fopen ("System-Passcode.bin", "wb+");
                         fprintf(sys, "%d", passcode);
                         fclose(sys);}
-                        
+
+                        //changing of backup interval
                         else if(subtask==2){
                         printf("Enter new backup interval ");
                         scanf("%d", &systembackup);
@@ -246,11 +261,12 @@ int main()
                         sys1 = fopen ("System-Backup.bin", "wb");
                         fprintf(sys1, "%d %d", systembackup, count);
                         fclose(sys1);}
-                        
+
+                        //books list restoration from backup
                         else if(subtask==3){
                         printf("\nWhich list do you want to restore \n1-Fiction \n2-Non-Fiction \nPlease enter your response - ");
                         scanf("%d", &systemrestore);
-                        if(systemrestore == 1){                                 //part1
+                        if(systemrestore == 1){                                 //Fiction Book list restoration from backup
                         fpf = fopen("Fiction Backup.txt","r");
                         fclose(fpf);
                         if (fpf == NULL){
@@ -263,7 +279,7 @@ int main()
                         remove("Fiction.txt");
                         rename("Fiction Backup.txt", "Fiction.txt");
                         printf("\nThe Fiction Book list has be restored.");}}
-                        else if(systemrestore == 2){                            //part2
+                        else if(systemrestore == 2){                            //Non-Fiction Book list restoratio from backup
                         fpf1 = fopen("Non-Fiction Backup.txt","r");
                         fclose(fpf1);
                         if (fpf1 == NULL){  
@@ -288,12 +304,14 @@ int main()
                          
                             else if (task != 1||2||3||4||5){
                             printf("\nYour Request cannot be fulfilled");}
-                           
+
+    //checks to see if the management system has reach the backup counter requirement for backups                      
     sys1 = fopen ("System-Backup.bin", "rb");
     fscanf(sys1, "%d %d", &systembackup, &count);
     fclose(sys1);
     if(systembackup == 0){
-    
+
+    //resets backup counter for the management system once at 0
     sys1 = fopen ("System-Backup.bin", "wb");    
     fscanf(sys1, "%d %d", &systembackup, &count);
     systembackup= count;
@@ -301,6 +319,7 @@ int main()
     fprintf(sys1, "%d %d", systembackup, count);
     fclose(sys1);
     
+    //creates a copy of the Fiction Book list once reaching the backup counter requirement
     fp = fopen("Fiction.txt","r");
     if (fp != NULL){
     fpf = fopen("Fiction Backup.txt","w");
@@ -311,6 +330,7 @@ int main()
     fclose(fp);
     fclose(fpf);}
     
+    //creates a copy of the Fiction Book list once reaching the backup counter requirement
     fp1 = fopen("Non-Fiction.txt","r");
     if (fp1 != NULL){
     fpf1 = fopen("Non-Fiction Backup.txt","w");
@@ -321,12 +341,14 @@ int main()
     fclose(fp1);
     fclose(fpf1);}}
 
-sys1 = fopen ("System-Backup.bin", "wb");
-systembackup= --systembackup;
-count= ++count;
-fprintf(sys1, "%d %d", systembackup, count);
-fclose(sys1);
-    
+    //adds count to the backup counter each time the management system runs
+    sys1 = fopen ("System-Backup.bin", "wb");
+    systembackup= --systembackup;
+    count= ++count;
+    fprintf(sys1, "%d %d", systembackup, count);
+    fclose(sys1);
+
+//choice to exit the management system or to go back to the main menu    
 printf("\n\nWhat else do you wish to do \n1-Go back To Menu \n2-Exit \n\nResponse - ");
 scanf("%d", &action);
 if(action == 1){
